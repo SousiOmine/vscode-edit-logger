@@ -101,11 +101,39 @@ VSCodeの設定（settings.json）から以下の設定を変更できます：
         "end": 15,
         "current": 12
       },
-      "hunks": "unified diff形式の変更内容"
+      "hunks": [
+        {
+          "old_start": 10,
+          "old_lines": 4,
+          "new_start": 10,
+          "new_lines": 5,
+          "context_before": 2,
+          "context_after": 2,
+          "lines": [
+            { "op": "context", "text": "function add(a, b) {" },
+            { "op": "delete",  "text": "  return a + b;" },
+            { "op": "insert",  "text": "  if (a == null || b == null) return 0;" },
+            { "op": "insert",  "text": "  return a + b;" },
+            { "op": "context", "text": "}" }
+          ]
+        }
+      ]
     }
   ]
 }
 ```
+
+#### 差分形式の説明
+
+- **old_start**: 旧ファイルでの開始行（1始まり）
+- **old_lines**: 旧ファイルでの変更行数
+- **new_start**: 新ファイルでの開始行（1始まり）
+- **new_lines**: 新ファイルでの変更行数
+- **context_before**: アンカー用に前に表示するコンテキスト行数（任意）
+- **context_after**: アンカー用に後に表示するコンテキスト行数（任意）
+- **lines**: 行単位の変更内容
+  - **op**: 操作種別（context: 変更なし, delete: 削除, insert: 追加）
+  - **text**: 行の内容
 
 ## 開発
 

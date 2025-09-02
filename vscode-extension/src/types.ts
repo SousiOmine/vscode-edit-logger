@@ -28,15 +28,16 @@ export interface HistoryEntry {
 }
 
 export interface DiffHunk {
-    old_start: number;
+    old_start: number;         // 旧ファイルでの開始行（1始まり）
     old_lines: number;
-    new_start: number;
+    new_start: number;         // 新ファイルでの開始行（1始まり）
     new_lines: number;
+    context_before?: number;   // アンカー用に前後何行見るか（任意）
+    context_after?: number;
     lines: DiffLine[];
 }
 
 export interface DiffLine {
     op: 'context' | 'delete' | 'insert';
     text: string;
-    line_number?: number;
 }

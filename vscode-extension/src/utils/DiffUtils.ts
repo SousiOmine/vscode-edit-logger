@@ -18,8 +18,7 @@ export class DiffUtils {
                 if (hunkLines.length > 0) {
                     contextLines.push({
                         op: 'context',
-                        text: oldLines[i],
-                        line_number: i + 1
+                        text: oldLines[i]
                     });
                 }
                 i++;
@@ -42,15 +41,13 @@ export class DiffUtils {
                 if (i < oldLines.length && (j >= newLines.length || oldLines[i] !== newLines[j])) {
                     hunkLines.push({
                         op: 'delete',
-                        text: oldLines[i],
-                        line_number: i + 1
+                        text: oldLines[i]
                     });
                     i++;
                 } else if (j < newLines.length) {
                     hunkLines.push({
                         op: 'insert',
-                        text: newLines[j],
-                        line_number: j + 1
+                        text: newLines[j]
                     });
                     j++;
                 }
@@ -76,11 +73,35 @@ export class DiffUtils {
         const oldLineCount = allLines.filter(l => l.op !== 'insert').length;
         const newLineCount = allLines.filter(l => l.op !== 'delete').length;
         
+        // コンテキスト行数を計算（先頭と末尾のcontext行数）
+        let beforeContext = 0;
+        let afterContext = 0;
+        
+        // 先頭のcontext行をカウント
+        for (let i = 0; i < allLines.length; i++) {
+            if (allLines[i].op === 'context') {
+                beforeContext++;
+            } else {
+                break;
+            }
+        }
+        
+        // 末尾のcontext行をカウント
+        for (let i = allLines.length - 1; i >= 0; i--) {
+            if (allLines[i].op === 'context') {
+                afterContext++;
+            } else {
+                break;
+            }
+        }
+        
         hunks.push({
             old_start: oldStart,
             old_lines: oldLineCount,
             new_start: newStart,
             new_lines: newLineCount,
+            context_before: beforeContext > 0 ? beforeContext : undefined,
+            context_after: afterContext > 0 ? afterContext : undefined,
             lines: allLines
         });
     }
