@@ -3,8 +3,11 @@ import { DIFF_CONTEXT_LINES } from '../constants';
 
 export class DiffUtils {
     static generateUnifiedDiff(oldContent: string, newContent: string): DiffHunk[] {
-        const oldLines = oldContent.split('\n');
-        const newLines = newContent.split('\n');
+        // キャリッジリターンを削除して改行コードを\nに統一
+        const normalizedOldContent = oldContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const normalizedNewContent = newContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const oldLines = normalizedOldContent.split('\n');
+        const newLines = normalizedNewContent.split('\n');
         const hunks: DiffHunk[] = [];
         
         let i = 0, j = 0;
@@ -112,7 +115,9 @@ export class DiffUtils {
         
         for (const event of events) {
             minLine = Math.min(minLine, event.position.line + 1);
-            maxLine = Math.max(maxLine, event.position.line + (event.diff?.before?.split('\n').length || 1));
+            // beforeはすでに正規化済みだが、念のため再度処理
+            const beforeText = event.diff?.before?.replace(/\r\n/g, '\n').replace(/\r/g, '\n') || '';
+            maxLine = Math.max(maxLine, event.position.line + (beforeText.split('\n').length || 1));
         }
         
         return {

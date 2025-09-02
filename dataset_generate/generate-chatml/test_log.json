@@ -1,0 +1,115 @@
+{
+  "fileContent": "using Metasia.Editor.Models;\r\nusing Metasia.Core.Objects;\r\nusing ReactiveUI;\r\n\r\nnamespace Metasia.Editor.ViewModels.Inspector;\r\n\r\npublic class PropertyRouterVewModel : ViewModelBase\r\n{\r\n    public string KariText { \r\n        get => _kariText;\r\n        set => this.RaiseAndSetIfChanged(ref _kariText, value);\r\n    }\r\n\r\n    private string _kariText = string.Empty;\r\n    public PropertyRouterVewModel(object target, ObjectPropertyFinder.EditablePropertyInfo propertyInfo)\r\n    {\r\n        KariText = propertyInfo.Identifier + \" \" + propertyInfo.Type;\r\n    }\r\n    \r\n}",
+  "fileContentWithLines": "   1 | using Metasia.Editor.Models;\n   2 | using Metasia.Core.Objects;\n   3 | using ReactiveUI;\n   4 | \n   5 | namespace Metasia.Editor.ViewModels.Inspector;\n   6 | \n   7 | public class PropertyRouterVewModel : ViewModelBase\n   8 | {\n   9 |     public string KariText { \n  10 |         get => _kariText;\n  11 |         set => this.RaiseAndSetIfChanged(ref _kariText, value);\n  12 |     }\n  13 | \n  14 |     private string _kariText = string.Empty;\n  15 |     public PropertyRouterVewModel(object target, ObjectPropertyFinder.EditablePropertyInfo propertyInfo)\n  16 |     {\n  17 |         KariText = propertyInfo.Identifier + \" \" + propertyInfo.Type;\n  18 |     }\n  19 |     \n  20 | }",
+  "context": {
+    "AGENTS.md": "# このリポジトリについて\n\nこのリポジトリには、マルチプラットフォーム対応の動画編集ソフトウェア \"Metasia\" のソースコードが格納されています。\nMetasiaは主にC# (.NET 9.0) とAvalonia UIによって構築されています。\n\n### 技術スタック\n* **言語**: `C#`\n* **プラットフォーム**: `.NET 9.0`\n* **UIフレームワーク**: `Avalonia UI`\n* **グラフィックス**: `SkiaSharp` (2Dグラフィックス描画に使用)\n\n---\n\n### リポジトリの構造\n\nこのプロジェクトは、責務に応じて主に以下のプロジェクトに分割されています。\n\n1.  **`Metasia.Core`**\n    * 動画編集の核となるバックエンドロジックを担当します。\n    * GUIフレームワークには依存せず、オブジェクトモデル、レンダリングパイプライン、ファイルI/O（JSONシリアライズ）、音声処理などの基本的な機能を含みます。\n    * タイムライン (`TimelineObject`)、レイヤー (`LayerObject`)、各種メディアオブジェクト (`Text`など) の定義が含まれています。\n\n2.  **`Metasia.Editor`**\n    * `Avalonia UI`を使用して構築されたGUI部分（フロントエンド）です。\n    * ユーザーインターフェースとユーザー操作の処理を担当します。\n    * アーキテクチャとして**MVVM (Model-View-ViewModel)** パターンを採用しています。\n\n3.  **`Metasia.Core.Tests`**\n    * `Metasia.Core`ライブラリの単体テストプロジェクトです。\n    * NUnitフレームワークを使用しています。\n\n4.  **`Metasia.Editor.Tests`**\n    * `Metasia.Editor`アプリケーションの単体テストプロジェクトです。\n    * NUnitとMoqフレームワークを使用しています。\n\n---\n\n### 主な特徴\n* **タイムラインベースの編集**: レイヤーとクリップを用いた直感的な編集が可能です。\n* **プロパティアニメーション**: `Jint`ライブラリを利用し、オブジェクトのプロパティを時間経過で動的に変化させることができます。\n* **JSONベースのプロジェクトファイル**: プロジェクトの状態は、人間が判読可能なJSON形式で保存されます。\n* **コマンドパターンによる編集履歴**: Undo/Redo機能が実装されており、安全な編集が可能です。"
+  },
+  "history": [
+    {
+      "timestamp": 1756818764595,
+      "eventType": "text_input",
+      "eventText": "+",
+      "fileName": "c:\\Users\\mainpc_r7700\\Documents\\Code\\Metasia\\Metasia.Editor\\ViewModels\\Inspector\\PropertyRouterVewModel.cs",
+      "lineNumbers": {
+        "start": 17,
+        "end": 20,
+        "current": 17
+      },
+      "hunks": [
+        {
+          "old_start": 1,
+          "old_lines": 4,
+          "new_start": 1,
+          "new_lines": 4,
+          "lines": [
+            {
+              "op": "delete",
+              "text": "        KariText = propertyInfo.Identifier + propertyInfo.Type;"
+            },
+            {
+              "op": "delete",
+              "text": "    }"
+            },
+            {
+              "op": "delete",
+              "text": "    "
+            },
+            {
+              "op": "delete",
+              "text": "}"
+            },
+            {
+              "op": "insert",
+              "text": "        KariText = propertyInfo.Identifier + \"\" + propertyInfo.Type;"
+            },
+            {
+              "op": "insert",
+              "text": "    }"
+            },
+            {
+              "op": "insert",
+              "text": "    "
+            },
+            {
+              "op": "insert",
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "timestamp": 1756818766902,
+      "eventType": "text_input",
+      "eventText": " ",
+      "fileName": "c:\\Users\\mainpc_r7700\\Documents\\Code\\Metasia\\Metasia.Editor\\ViewModels\\Inspector\\PropertyRouterVewModel.cs",
+      "lineNumbers": {
+        "start": 17,
+        "end": 20,
+        "current": 17
+      },
+      "hunks": [
+        {
+          "old_start": 1,
+          "old_lines": 4,
+          "new_start": 1,
+          "new_lines": 4,
+          "lines": [
+            {
+              "op": "delete",
+              "text": "        KariText = propertyInfo.Identifier + \"\" + propertyInfo.Type;"
+            },
+            {
+              "op": "delete",
+              "text": "    }"
+            },
+            {
+              "op": "delete",
+              "text": "    "
+            },
+            {
+              "op": "delete",
+              "text": "}"
+            },
+            {
+              "op": "insert",
+              "text": "        KariText = propertyInfo.Identifier + \" \" + propertyInfo.Type;"
+            },
+            {
+              "op": "insert",
+              "text": "    }"
+            },
+            {
+              "op": "insert",
+              "text": "    "
+            },
+            {
+              "op": "insert",
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

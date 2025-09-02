@@ -33,7 +33,9 @@ export class FileUtils {
     constructor(private fileSystem: IFileSystem = new NodeFileSystem()) {}
 
     addLineNumbers(content: string): string {
-        const lines = content.split('\n');
+        // キャリッジリターンを削除して改行コードを\nに統一
+        const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const lines = normalizedContent.split('\n');
         const maxLineNumber = lines.length;
         const lineNumberWidth = Math.max(4, maxLineNumber.toString().length + 1);
         
@@ -64,7 +66,9 @@ export class FileUtils {
 
                 if (filePath && this.fileSystem.existsSync(filePath)) {
                     const content = this.fileSystem.readFileSync(filePath, 'utf8');
-                    context[fileName] = content;
+                    // キャリッジリターンを削除して改行コードを\nに統一
+                    const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                    context[fileName] = normalizedContent;
                 }
             } catch (error) {
                 console.error(`Failed to load context file ${fileName}:`, error);

@@ -81,17 +81,21 @@ export class EventManager {
 
         const beforeText = document.getText(change.range);
         
+        // キャリッジリターンを削除して改行コードを\nに統一
+        const normalizedEventText = eventText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const normalizedBeforeText = beforeText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        
         return {
             timestamp: Date.now(),
             type: eventType,
-            text: eventText,
+            text: normalizedEventText,
             position: {
                 line: change.range.start.line,
                 character: change.range.start.character
             },
             diff: {
-                before: beforeText,
-                after: change.text
+                before: normalizedBeforeText,
+                after: normalizedEventText
             }
         };
     }
