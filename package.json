@@ -1,0 +1,165 @@
+{
+  "name": "vscode-edit-logger",
+  "displayName": "VSCode Edit Logger",
+  "description": "VSCodeの編集ログをMarkdown形式で収集する拡張機能",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  },
+  "contributes": {
+    "configuration": {
+      "title": "VSCode Edit Logger",
+      "properties": {
+        "editLogger.datasetRoot": {
+          "type": "string",
+          "default": "dataset",
+          "description": "データセットの保存先ルートディレクトリ"
+        },
+        "editLogger.includePatterns": {
+          "type": "array",
+          "default": [],
+          "description": "収集対象のファイルパターン（空の場合はexcludePatternsに該当しないすべてのテキストファイルを対象とします）"
+        },
+        "editLogger.excludePatterns": {
+          "type": "array",
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.git/**",
+            "**/venv/**"
+          ],
+          "description": "収集除外のファイルパターン"
+        },
+        "editLogger.enableMasking": {
+          "type": "boolean",
+          "default": true,
+          "description": "秘匿情報のマスキングを有効にする"
+        },
+        "editLogger.maskPatterns": {
+          "type": "array",
+          "default": [
+            "api[_-]?key",
+            "secret[_-]?key",
+            "password",
+            "token",
+            "auth[_-]?token",
+            "bearer[_-]?token",
+            "access[_-]?token",
+            "refresh[_-]?token"
+          ],
+          "description": "マスキング対象のパターン（正規表現）"
+        },
+        "editLogger.historySize": {
+          "type": "number",
+          "default": 5,
+          "description": "記録する過去のイベント数"
+        },
+        "editLogger.debounceMs": {
+          "type": "number",
+          "default": 1000,
+          "description": "ユーザー操作のデバウンス時間（ミリ秒）"
+        },
+        "editLogger.contextFiles": {
+          "type": "array",
+          "default": [],
+          "description": "コンテキストとして保存するファイル名のリスト"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "editLogger.toggleLogging",
+        "title": "Edit Logger: ログ収集を開始/停止",
+        "icon": "$(play)"
+      },
+      {
+        "command": "editLogger.showStatus",
+        "title": "Edit Logger: 現在の状態を表示"
+      },
+      {
+        "command": "editLogger.refreshSidebar",
+        "title": "Edit Logger: サイドバーを更新",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "editLogger.openDatasetFolder",
+        "title": "Edit Logger: データセットフォルダを開く",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "editLogger.setContextFiles",
+        "title": "Edit Logger: コンテキストファイルを設定"
+      },
+      {
+        "command": "editLogger.configure",
+        "title": "Edit Logger: 設定を変更",
+        "icon": "$(gear)"
+      }
+    ],
+    "views": {
+      "editLogger": [
+        {
+          "id": "editLoggerSidebar",
+          "name": "Edit Logger"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "editLogger",
+          "title": "Edit Logger",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "editLoggerSidebar",
+        "contents": "Edit Loggerが有効になっていません。\n[コマンドパレット](command:workbench.action.openCommandPalette)から「Edit Logger: ログ収集を開始/停止」を実行してください。"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "editLogger.refreshSidebar",
+          "when": "view == editLoggerSidebar",
+          "group": "navigation"
+        },
+        {
+          "command": "editLogger.openDatasetFolder",
+          "when": "view == editLoggerSidebar",
+          "group": "navigation"
+        },
+        {
+          "command": "editLogger.configure",
+          "when": "view == editLoggerSidebar",
+          "group": "navigation"
+        }
+      ]
+    }
+  }
+}
