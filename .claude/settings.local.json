@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run compile:*)",
+      "Bash(npm install:*)",
+      "mcp__web-perplexity-ask__get_documentation",
+      "Bash(code:*)",
+      "Bash(npm run package:*)",
+      "Bash(npm run lint:*)",
+      "Bash(node:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run test:unit:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm test:*)",
+      "Bash(npx jest:*)",
+      "Bash(mv:*)",
+      "Bash(tree:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
