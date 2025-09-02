@@ -1,113 +1,141 @@
 # VSCode Edit Logger
 
-VSCodeの編集ログをMarkdown形式で収集する拡張機能です。開発者のコード編集プロセスを記録し、後学習用のデータセットを作成することを目的としています。
+VSCodeの編集操作を記録し、AI学習用データセットとして保存するVisual Studio Code拡張機能です。
 
 ## 機能
 
-- **編集イベント収集**: 文書の開始、変更、選択イベントを自動収集
-- **デバウンス機能**: 1200msのアイドル時間後に編集セッションを保存
-- **Markdown形式保存**: Zeta形式と互換性のある構造で保存
-- **秘匿情報マスキング**: APIキーやパスワードなどを自動的にマスキング
-- **柔軟な設定**: 収集対象/除外ファイルの設定が可能
+- **編集ログの記録**: テキストの入力、削除、置換操作を自動的に記録
+- **マスキング機能**: APIキーやパスワードなどの機密情報を自動的にマスキング
+- **ファイルフィルタリング**: 記録対象のファイルをパターンで指定可能
+- **コンテキスト保存**: 指定したファイル（package.json等）をコンテキスト情報として保存
+- **サイドバー表示**: 拡張機能の状態や統計情報をサイドバーで表示
+- **デバウンス処理**: 連続した編集操作をまとめて記録
 
-## インストール
+## インストール方法
 
 1. このリポジトリをクローン
-2. `npm install` で依存パッケージをインストール
-3. `npm run compile` でTypeScriptをコンパイル
-4. VSCodeでこのフォルダを開き、F5キーでデバッグモードを起動
-
-## 使用方法
-
-1. コマンドパレットを開き（Ctrl+Shift+P）、`Edit Logger: ログ収集を開始/停止` を実行
-2. または、サイドバーの「Edit Logger」パネルから操作できます
-3. 対象ファイルを編集すると、自動的に編集ログが保存されます
-
-### アクティビティバー機能
-
-拡張機能を有効にすると、アクティビティバー（左端のアイコンバー）にEdit Loggerアイコンが表示されます：
-
-1. アクティビティバーのEdit Loggerアイコンをクリック
-2. サイドパネルにGUIが表示されます：
-
-- **ステータス表示**: 現在のログ収集状態を表示
-- **操作ボタン**: ログ収集の開始/停止
-- **統計情報**: アクティブセッション数、保存済みセッション数
-- **設定表示**: 現在の設定値
-- **操作メニュー**: データセットフォルダを開く、更新ボタン
-
-パネルのタイトルバーには以下のボタンがあります：
-- 🔄 更新ボタン: パネルの情報を更新
-- 📂 フォルダを開くボタン: データセット保存先フォルダを開く
+2. VSCodeで開く
+3. `F5`キーを押してデバッグ実行
+4. 拡張開発ホストが起動したら、`Ctrl+Shift+P`でコマンドパレットを開き、「Edit Logger: ログ収集を開始/停止」を実行
 
 ## 設定
 
-VSCodeの設定で以下のオプションを変更できます：
+VSCodeの設定（settings.json）から以下の設定を変更できます：
 
-- `editLogger.datasetRoot`: データセットの保存先ルートディレクトリ（デフォルト: `dataset`）
-- `editLogger.debounceMs`: 編集イベントのデバウンス時間（デフォルト: `1200`ms）
-- `editLogger.contextLines`: diffのコンテキスト行数（デフォルト: `20`）
-- `editLogger.includePatterns`: 収集対象のファイルパターン
-- `editLogger.excludePatterns`: 収集除外のファイルパターン
-- `editLogger.enableMasking`: 秘匿情報のマスキングを有効にする（デフォルト: `true`）
-- `editLogger.maskPatterns`: マスキング対象のパターン（正規表現）
-
-## 出力形式
-
-各編集セッションは以下のMarkdown形式で保存されます：
-
-```markdown
----
-timestamp: 2024-01-01T12:00:00.000Z
-source_file: /path/to/file.js
-event_count: 3
-duration_ms: 1500
----
-
-## events
-
-- 0ms: insert at line 10
-- 500ms: replace at line 15
-- 1000ms: delete at line 20
-
-## input
-
-```
-// 編集前のコード
-function hello() {
-    console.log("Hello");
+```json
+{
+  "editLogger.datasetRoot": "dataset",
+  "editLogger.includePatterns": [],
+  "editLogger.excludePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/venv/**"
+  ],
+  "editLogger.enableMasking": true,
+  "editLogger.maskPatterns": [
+    "api[_-]?key",
+    "secret[_-]?key",
+    "password",
+    "token",
+    "auth[_-]?token",
+    "bearer[_-]?token",
+    "access[_-]?token",
+    "refresh[_-]?token"
+  ],
+  "editLogger.historySize": 5,
+  "editLogger.debounceMs": 1000,
+  "editLogger.contextFiles": []
 }
 ```
 
-## output
+### 設定項目の説明
 
-```
-// 編集後のコード
-function hello() {
-    console.log("Hello World");
+- **datasetRoot**: データセットの保存先ディレクトリ（デフォルト: `dataset`）
+- **includePatterns**: 記録対象のファイルパターン（空の場合は除外パターンに該当しないすべてのテキストファイルを対象）
+- **excludePatterns**: 記録除外のファイルパターン
+- **enableMasking**: 機密情報のマスキングを有効化（デフォルト: true）
+- **maskPatterns**: マスキング対象の正規表現パターン
+- **historySize**: 記録する過去のイベント数（デフォルト: 5）
+- **debounceMs**: 編集操作のデバウンス時間（ミリ秒、デフォルト: 1000）
+- **contextFiles**: コンテキストとして保存するファイル名のリスト
+
+## 使用方法
+
+### 基本的な使い方
+
+1. コマンドパレット（`Ctrl+Shift+P`）から「Edit Logger: ログ収集を開始/停止」を選択
+2. 通常通りコーディングを行う
+3. 編集操作が自動的に記録される
+
+### サイドバーの機能
+
+- **ステータス表示**: 現在の記録状態（有効/無効）
+- **収集開始/停止**: ログ記録のオン/オフ切り替え
+- **統計情報**: 保存済みイベント数の表示
+- **設定確認**: 現在の設定値の表示
+- **データセットフォルダを開く**: 保存先フォルダを開く
+- **コンテキストファイルを設定**: コンテキストとして保存するファイルを指定
+
+### 出力形式
+
+データセットは以下のJSON形式で保存されます：
+
+```json
+{
+  "fileContent": "ファイルの内容",
+  "fileContentWithLines": "行番号付きのファイル内容",
+  "context": {
+    "package.json": "コンテキストファイルの内容",
+    "README.md": "コンテキストファイルの内容"
+  },
+  "history": [
+    {
+      "timestamp": 1640995200000,
+      "eventType": "text_input",
+      "eventText": "入力されたテキスト",
+      "fileName": "example.js",
+      "lineNumbers": {
+        "start": 10,
+        "end": 15,
+        "current": 12
+      },
+      "hunks": "unified diff形式の変更内容"
+    }
+  ]
 }
 ```
-
-## assertions
-
-- カーソル位置: 15:25
-- 編集イベント数: 3
-- 編集時間: 1500ms
-```
-
-## セキュリティ
-
-- すべてのデータはローカルに保存されます
-- 外部への送信は行いません
-- 秘匿情報は自動的にマスキングされます
-- デフォルトで機密情報を含む可能性のあるファイルは除外されます
 
 ## 開発
 
-```bash
-# 依存パッケージのインストール
-npm install
+### プロジェクトの構成
 
+```
+src/
+├── extension.ts          # 拡張機能のエントリーポイント
+├── EditLogger.ts         # メインのロジック
+├── sidebarProvider.ts    # サイドバーのUI
+├── config/               # 設定管理
+│   ├── ConfigManager.ts
+│   └── ConfigHandler.ts
+├── events/               # イベント管理
+│   └── EventManager.ts
+├── types.ts              # 型定義
+├── constants.ts          # 定数
+├── errors.ts             # エラー定義
+└── utils/                # ユーティリティ
+    ├── FileUtils.ts
+    ├── DiffUtils.ts
+    ├── JsonExporter.ts
+    ├── MaskingUtils.ts
+    ├── ErrorHandler.ts
+    └── EventHistory.ts
+```
+
+### ビルドと実行
+
+```bash
 # コンパイル
 npm run compile
 
