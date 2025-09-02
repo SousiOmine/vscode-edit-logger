@@ -1,0 +1,1 @@
+# vscode-edit-logger
